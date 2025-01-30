@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Pong Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+        canvas {
+            background-color: #000;
+            border: 2px solid #fff;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="pongCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('pongCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const paddleWidth = 10, paddleHeight = 100;
+        const ballRadius = 10;
+
+        let player1Y = 250, player2Y = 250;
+        let ballX = 400, ballY = 300;
+        let ballSpeedX = 5, ballSpeedY = 5;
+
+        let player1Score = 0, player2Score = 0;
+
+        function drawRect(x, y, width, height, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, width, height);
+        }
+
+        function drawCircle(x, y, radius, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawText(text, x, y, color) {
+            ctx.fillStyle = color;
+            ctx.font = "30px Arial";
+            ctx.fillText(text, x, y);
+        }
+
+        function resetBall() {
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            ballSpeedX = -ballSpeedX;
+        }
+
+        function collisionDetection() {
+            // Colisão com as raquetes
+            if (ballX - ballRadius < paddleWidth && ballY > player1Y && ballY < player1Y + paddleHeight) {
+                ballSpeedX = -ballSpeedX;
+            }
+            if (ballX + ballRadius > canvas.width - paddleWidth && ballY > player2Y && ballY < player2Y + paddleHeight) {
+                ballSpeedX = -ballSpeedX;
+            }
+
+            // Colisão com as paredes superior e inferior
+            if (ballY - ballRadius < 0 || ballY + ballRadius > canvas.height) {
+                ballSpeedY = -ballSpeedY;
+            }
+
+            // Pontuação
+            if (ballX - ballRadius < 0) {
+                player2Score++;
+                resetBall();
+            }
+            if (ballX + ballRadius > canvas.width) {
+                player1Score++;
+                resetBall();
+            }
+        }
+
+        function update() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            collisionDetection();
+        }
+
+        function draw() {
+            // Limpa o canvas
+            drawRect(0, 0, canvas.width, canvas.height, '#000');
+
+            // Desenha as raquetes
+            drawRect(0, player1Y, paddleWidth, paddleHeight, '#fff');
+            drawRect(canvas.width - paddleWidth, player2Y, paddleWidth, paddleHeight, '#fff');
+
+            // Desenha a bola
+            drawCircle(ballX, ballY, ballRadius, '#fff');
+
+            // Desenha a pontuação
+            drawText(player1Score, 100, 50, '#fff');
+            drawText(player2Score, canvas.width - 150, 50, '#fff');
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        canvas.addEventListener('mousemove', (event) => {
+            let rect = canvas.getBoundingClientRect();
+            player1Y = event.clientY - rect.top - paddleHeight / 2;
+        });
+
+        canvas.addEventListener('touchmove', (event) => {
+            let rect = canvas.getBoundingClientRect();
+            player1Y = event.touches[0].clientY - rect.top - paddleHeight / 2;
+            event.preventDefault();
+        });
+
+        // Movimento da raquete do jogador 2 (controlada pelo computador)
+        function computerMovement() {
+            if (player2Y + paddleHeight / 2 < ballY) {
+                player2Y += 4;
+            } else {
+                player2Y -= 4;
+            }
+        }
+
+        function updateComputer() {
+            computerMovement();
+        }
+
+        function gameLoop() {
+            update();
+            updateComputer();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>
