@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Xadrez Básico</title>
+    <style>
+        .tabuleiro {
+            display: grid;
+            grid-template-columns: repeat(8, 60px);
+            grid-template-rows: repeat(8, 60px);
+            border: 2px solid #333;
+        }
+
+        .casa {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            cursor: pointer;
+        }
+
+        .branca {
+            background-color: #f0d9b5;
+        }
+
+        .preta {
+            background-color: #b58863;
+        }
+
+        .selecionada {
+            background-color: #7c3f2d !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabuleiro" id="tabuleiro"></div>
+
+    <script>
+        let tabuleiro = [];
+        let pecaSelecionada = null;
+        let vezDasBrancas = true;
+
+        // Configuração inicial do tabuleiro
+        const configInicial = [
+            ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'],
+            ['♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['', '', '', '', '', '', '', ''],
+            ['♙', '♙', '♙', '♙', '♙', '♙', '♙', '♙'],
+            ['♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖']
+        ];
+
+        function criarTabuleiro() {
+            const elementoTabuleiro = document.getElementById('tabuleiro');
+            
+            for (let linha = 0; linha < 8; linha++) {
+                tabuleiro[linha] = [];
+                
+                for (let coluna = 0; coluna < 8; coluna++) {
+                    const casa = document.createElement('div');
+                    casa.className = `casa ${(linha + coluna) % 2 === 0 ? 'branca' : 'preta'}`;
+                    casa.dataset.linha = linha;
+                    casa.dataset.coluna = coluna;
+                    
+                    // Adiciona a peça
+                    const peca = configInicial[linha][coluna];
+                    tabuleiro[linha][coluna] = peca;
+                    casa.textContent = peca;
+
+                    casa.addEventListener('click', (e) => manipularCliqueCasa(linha, coluna));
+                    elementoTabuleiro.appendChild(casa);
+                }
+            }
+        }
+
+        function manipularCliqueCasa(linha, coluna) {
+            const casa = document.querySelector(`[data-linha="${linha}"][data-coluna="${coluna}"]`);
+            const peca = tabuleiro[linha][coluna];
+
+            if (pecaSelecionada) {
+                // Tentativa de movimento
+                if (validarMovimento(pecaSelecionada.linha, pecaSelecionada.coluna, linha, coluna)) {
+                    moverPeca(pecaSelecionada.linha, pecaSelecionada.coluna, linha, coluna);
+                    vezDasBrancas = !vezDasBrancas;
+                }
+                desselecionarPeca();
+            } else if (peca && pecaCorreta(peca)) {
+                selecionarPeca(casa, linha, coluna);
+            }
+        }
+
+        function pecaCorreta(peca) {
+            const branca = peca === peca.toUpperCase();
+            return branca === vezDasBrancas;
+        }
+
+        function selecionarPeca(casa, linha, coluna) {
+            pecaSelecionada = { linha, coluna };
+            casa.classList.add('selecionada');
+        }
+
+        function desselecionarPeca() {
+            document.querySelector('.selecionada')?.classList.remove('selecionada');
+            pecaSelecionada = null;
+        }
+
+        function validarMovimento(linhaOrigem, colunaOrigem, linhaDestino, colunaDestino) {
+            const peca = tabuleiro[linhaOrigem][colunaOrigem];
+            
+            // Movimento simples do peão (apenas para exemplo)
+            if (peca === '♙' && vezDasBrancas) {
+                return colunaOrigem === colunaDestino && 
+                       linhaDestino === linhaOrigem - 1 &&
+                       !tabuleiro[linhaDestino][colunaDestino];
+            }
+            
+            if (peca === '♟' && !vezDasBrancas) {
+                return colunaOrigem === colunaDestino && 
+                       linhaDestino === linhaOrigem + 1 &&
+                       !tabuleiro[linhaDestino][colunaDestino];
+            }
+
+            return true; // Remova isso e implemente as regras reais
+        }
+
+        function moverPeca(linhaOrigem, colunaOrigem, linhaDestino, colunaDestino) {
+            const casas = document.getElementsByClassName('casa');
+            tabuleiro[linhaDestino][colunaDestino] = tabuleiro[linhaOrigem][colunaOrigem];
+            tabuleiro[linhaOrigem][colunaOrigem] = '';
+            
+            // Atualiza a interface
+            for (let casa of casas) {
+                const linha = parseInt(casa.dataset.linha);
+                const coluna = parseInt(casa.dataset.coluna);
+                casa.textContent = tabuleiro[linha][coluna];
+            }
+        }
+
+        // Inicializa o jogo
+        criarTabuleiro();
+    </script>
+</body>
+</html>
