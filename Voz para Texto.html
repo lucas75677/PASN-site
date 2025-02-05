@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voz para Texto</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        #resultado { margin-top: 20px; font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Converta sua voz em texto</h1>
+    <button id="start-btn">Começar a falar</button>
+    <p id="resultado">Seu texto aparecerá aqui...</p>
+
+    <script>
+        const botao = document.getElementById("start-btn");
+        const resultado = document.getElementById("resultado");
+
+        const reconhecimento = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        reconhecimento.lang = "pt-BR"; // Define o idioma para português
+        reconhecimento.continuous = false; // Para após a primeira fala
+
+        botao.addEventListener("click", () => {
+            reconhecimento.start();
+            resultado.innerText = "Ouvindo...";
+        });
+
+        reconhecimento.onresult = (event) => {
+            resultado.innerText = event.results[0][0].transcript;
+        };
+
+        reconhecimento.onerror = (event) => {
+            resultado.innerText = "Erro ao reconhecer a fala. Tente novamente.";
+        };
+    </script>
+</body>
+</html>
