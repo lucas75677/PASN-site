@@ -1,79 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
-<title>Chat com Gemini</title>
-<style>
-  /* Estilos CSS para o chat */
-  #chat-container {
-    width: 400px;
-    height: 300px;
-    border: 1px solid #ccc;
-    overflow-y: scroll;
-    padding: 10px;
-  }
-
-  #user-input {
-    width: calc(100% - 70px); /* Ajusta a largura do input */
-    padding: 5px;
-    margin-top: 10px;
-  }
-
-  button {
-    width: 60px;
-    padding: 5px;
-    margin-top: 10px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Simples</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        #chatbox {
+            width: 300px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #messages {
+            height: 200px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        #input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-top: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .user-message {
+            text-align: right;
+            color: #007bff;
+        }
+        .bot-message {
+            text-align: left;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 
-  <div id="chat-container">
+<div id="chatbox">
+    <div id="messages">
+        <div class="message bot-message">Chatbot: Olá! Como posso ajudar?</div>
     </div>
+    <input type="text" id="input" placeholder="Digite uma mensagem...">
+</div>
 
-  <input type="text" id="user-input" placeholder="Digite sua mensagem...">
-  <button onclick="sendMessage()">Enviar</button>
+<script>
+    const input = document.getElementById('input');
+    const messages = document.getElementById('messages');
 
-  <script>
-    const apiKey = 'AIzaSyA_yQ68THDQcOUnE7ybbZbhvqI6_EuXnRk'; // Sua chave de API
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            const userMessage = input.value.trim();
+            if (userMessage) {
+                messages.innerHTML += `<div class="message user-message">Você: ${userMessage}</div>`;
+                input.value = '';
 
-    function sendMessage() {
-      var userInput = document.getElementById("user-input");
-      var message = userInput.value;
-
-      if (message.trim() !== "") { // Verifica se a mensagem não está vazia
-        var chatContainer = document.getElementById("chat-container");
-        chatContainer.innerHTML += "<p>Você: " + message + "</p>"; // Exibe a mensagem do usuário
-
-        fetch('https://api.gemini.com/v1/chat', { // URL da API do Gemini (substitua pela URL correta se necessário)
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + apiKey // Inclui a chave de API no cabeçalho
-          },
-          body: JSON.stringify({
-            message: message
-          })
-        })
-        .then(response => response.json())
-        .then(data => {
-          // Verifica se a resposta contém a propriedade 'response'
-          if (data && data.response) {
-            chatContainer.innerHTML += "<p>Gemini: " + data.response + "</p>"; // Exibe a resposta do Gemini
-          } else {
-            chatContainer.innerHTML += "<p>Gemini: Erro na resposta da API.</p>"; // Exibe uma mensagem de erro
-            console.error("Resposta da API inválida:", data); // Log do erro no console
-          }
-          userInput.value = ""; // Limpa o input
-          chatContainer.scrollTop = chatContainer.scrollHeight; // Mantém o scroll no final
-        })
-        .catch(error => {
-          chatContainer.innerHTML += "<p>Gemini: Erro na requisição.</p>"; // Exibe uma mensagem de erro
-          console.error("Erro na requisição:", error); // Log do erro no console
-          userInput.value = ""; // Limpa o input
-        });
-      }
-    }
-  </script>
+                if (userMessage.toLowerCase() === 'oi') {
+                    setTimeout(() => {
+                        messages.innerHTML += `<div class="message bot-message">Chatbot: Oikk</div>`;
+                        messages.scrollTop = messages.scrollHeight;
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        messages.innerHTML += `<div class="message bot-message">Chatbot: Não entendi. Digite "oi" para começar.</div>`;
+                        messages.scrollTop = messages.scrollHeight;
+                    }, 500);
+                }
+            }
+        }
+    });
+</script>
 
 </body>
 </html>
