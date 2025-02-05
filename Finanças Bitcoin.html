@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanças Bitcoin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #f7931a;
+        }
+        #bitcoin-price {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Finanças Bitcoin</h1>
+        <p>Preço atual do Bitcoin:</p>
+        <div id="bitcoin-price">Carregando...</div>
+    </div>
+
+    <script>
+        async function fetchBitcoinPrice() {
+            try {
+                const response = await fetch("https://api.coindesk.com/v1/bpi/currentprice/BRL.json");
+                const data = await response.json();
+                const price = data.bpi.USD.rate;
+                document.getElementById("bitcoin-price").innerText = `💰 $${price}`;
+            } catch (error) {
+                document.getElementById("bitcoin-price").innerText = "Erro ao carregar preço.";
+            }
+        }
+        fetchBitcoinPrice();
+        setInterval(fetchBitcoinPrice, 60000); // Atualiza a cada 60 segundos
+    </script>
+
+    <div class="footer">Dados da API Coindesk</div>
+
+</body>
+</html>
