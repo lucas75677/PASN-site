@@ -1,4 +1,4 @@
-const INVIDIOUS_INSTANCE = "https://vid.puffyan.us";  // Escolha uma instância disponível
+const INVIDIOUS_INSTANCE = "https://inv.nadeko.net";  // Escolha uma instância disponível
 const API_URL = `${INVIDIOUS_INSTANCE}/api/v1/trending`;  // Pega vídeos populares
 
 document.addEventListener("DOMContentLoaded", () => {
