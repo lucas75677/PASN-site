@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texto para Voz</title>
+</head>
+<body>
+    <h2>Conversor de Texto para Voz</h2>
+    <textarea id="texto" rows="4" cols="50" placeholder="Digite um texto para ser falado..."></textarea>
+    <br>
+    <button onclick="falar()">Falar</button>
+    <button onclick="gravar()">Gravar e Baixar</button>
+    <a id="downloadLink" style="display: none;">Baixar Áudio</a>
+
+    <script>
+        function falar() {
+            let texto = document.getElementById("texto").value;
+            let sintetizador = window.speechSynthesis;
+            let fala = new SpeechSynthesisUtterance(texto);
+            
+            fala.lang = "pt-BR"; // Define o idioma para português
+            fala.rate = 1; // Velocidade da fala
+            fala.pitch = 1; // Tom da voz
+            
+            sintetizador.speak(fala);
+        }
+
+        function gravar() {
+            let texto = document.getElementById("texto").value;
+            let sintetizador = window.speechSynthesis;
+            let fala = new SpeechSynthesisUtterance(texto);
+
+            fala.lang = "pt-BR";
+            fala.rate = 1;
+            fala.pitch = 1;
+
+            // Criando um stream de áudio via MediaRecorder
+            let audioContext = new AudioContext();
+            let dest = audioContext.createMediaStreamDestination();
+            let mediaRecorder = new MediaRecorder(dest.stream);
+            let chunks = [];
+
+            let utterance = new SpeechSynthesisUtterance(texto);
+            let source = audioContext.createMediaStreamSource(dest.stream);
+            utterance.onstart = () => {
+                mediaRecorder.start();
+            };
+
+            utterance.onend = () => {
+                mediaRecorder.stop();
+            };
+
+            mediaRecorder.ondataavailable = (event) => {
+                chunks.push(event.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                let blob = new Blob(chunks, { type: "audio/mp3" });
+                let url = URL.createObjectURL(blob);
+                let link = document.getElementById("downloadLink");
+
+                link.href = url;
+                link.download = "fala.mp3";
+                link.style.display = "block";
+                link.textContent = "Baixar Áudio";
+            };
+
+            sintetizador.speak(utterance);
+        }
+    </script>
+</body>
+</html>
