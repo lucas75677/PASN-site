@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Chat com Gemini</title>
+<style>
+  /* Estilos CSS para o chat */
+</style>
+</head>
+<body>
+
+  <div id="chat-container">
+    </div>
+
+  <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+  <button onclick="sendMessage()">Enviar</button>
+
+  <script>
+    function sendMessage() {
+      var userInput = document.getElementById("user-input");
+      var message = userInput.value;
+
+      // Enviar mensagem para a API do Gemini
+      fetch('https://api.gemini.com/v1/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer SUA_CHAVE_DE_API'
+        },
+        body: JSON.stringify({
+          message: message
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Exibir resposta do Gemini no chat
+        var chatContainer = document.getElementById("chat-container");
+        chatContainer.innerHTML += "<p>Gemini: " + data.response + "</p>";
+        userInput.value = "";
+      });
+    }
+  </script>
+
+</body>
+</html>
