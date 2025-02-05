@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+#gameArea {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: #555;
+    overflow: hidden;
+}
+
+#playerCar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    width: 50px;
+    height: 100px;
+    background-color: red;
+    transform: translateX(-50%);
+}
+
+#opponentCar {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    width: 50px;
+    height: 100px;
+    background-color: blue;
+    transform: translateX(-50%);
+    animation: moveDown 2s linear infinite;
+}
+
+@keyframes moveDown {
+    from {
+        top: -100px;
+    }
+    to {
+        top: 100vh;
+    }
+}
