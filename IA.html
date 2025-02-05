@@ -4,6 +4,25 @@
 <title>Chat com Gemini</title>
 <style>
   /* Estilos CSS para o chat */
+  #chat-container {
+    width: 400px;
+    height: 300px;
+    border: 1px solid #ccc;
+    overflow-y: scroll;
+    padding: 10px;
+  }
+
+  #user-input {
+    width: calc(100% - 70px); /* Ajusta a largura do input */
+    padding: 5px;
+    margin-top: 10px;
+  }
+
+  button {
+    width: 60px;
+    padding: 5px;
+    margin-top: 10px;
+  }
 </style>
 </head>
 <body>
@@ -15,28 +34,44 @@
   <button onclick="sendMessage()">Enviar</button>
 
   <script>
+    const apiKey = 'AIzaSyA_yQ68THDQcOUnE7ybbZbhvqI6_EuXnRk'; // Sua chave de API
+
     function sendMessage() {
       var userInput = document.getElementById("user-input");
       var message = userInput.value;
 
-      // Enviar mensagem para a API do Gemini
-      fetch('https://api.gemini.com/v1/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'AIzaSyA_yQ68THDQcOUnE7ybbZbhvqI6_EuXnRk'
-        },
-        body: JSON.stringify({
-          message: message
-        })
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Exibir resposta do Gemini no chat
+      if (message.trim() !== "") { // Verifica se a mensagem não está vazia
         var chatContainer = document.getElementById("chat-container");
-        chatContainer.innerHTML += "<p>Gemini: " + data.response + "</p>";
-        userInput.value = "";
-      });
+        chatContainer.innerHTML += "<p>Você: " + message + "</p>"; // Exibe a mensagem do usuário
+
+        fetch('https://api.gemini.com/v1/chat', { // URL da API do Gemini (substitua pela URL correta se necessário)
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + apiKey // Inclui a chave de API no cabeçalho
+          },
+          body: JSON.stringify({
+            message: message
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Verifica se a resposta contém a propriedade 'response'
+          if (data && data.response) {
+            chatContainer.innerHTML += "<p>Gemini: " + data.response + "</p>"; // Exibe a resposta do Gemini
+          } else {
+            chatContainer.innerHTML += "<p>Gemini: Erro na resposta da API.</p>"; // Exibe uma mensagem de erro
+            console.error("Resposta da API inválida:", data); // Log do erro no console
+          }
+          userInput.value = ""; // Limpa o input
+          chatContainer.scrollTop = chatContainer.scrollHeight; // Mantém o scroll no final
+        })
+        .catch(error => {
+          chatContainer.innerHTML += "<p>Gemini: Erro na requisição.</p>"; // Exibe uma mensagem de erro
+          console.error("Erro na requisição:", error); // Log do erro no console
+          userInput.value = ""; // Limpa o input
+        });
+      }
     }
   </script>
 
