@@ -68,17 +68,31 @@
                 messages.innerHTML += `<div class="message user-message">Você: ${userMessage}</div>`;
                 input.value = '';
 
-                if (userMessage.toLowerCase() === 'oi') {
-                    setTimeout(() => {
-                        messages.innerHTML += `<div class="message bot-message">Chatbot: Oikk</div>`;
-                        messages.scrollTop = messages.scrollHeight;
-                    }, 500);
-                } else {
-                    setTimeout(() => {
-                        messages.innerHTML += `<div class="message bot-message">Chatbot: Não entendi. Digite "oi" para começar.</div>`;
-                        messages.scrollTop = messages.scrollHeight;
-                    }, 500);
+                let botResponse = '';
+                switch (userMessage.toLowerCase()) {
+                    case 'oi':
+                        botResponse = 'Oikk';
+                        break;
+                    case 'bom dia':
+                        botResponse = 'Olá! Está tudo bem?';
+                        break;
+                    case 'boa tarde':
+                        botResponse = 'Feliz boa tarde!';
+                        break;
+                    case 'boa noite':
+                        botResponse = 'Boa noite!';
+                        break;
+                    case 'e como você age no mundo virtual':
+                        botResponse = 'Eu queria ser amigos e caras pessoas perto com você.';
+                        break;
+                    default:
+                        botResponse = 'Não entendi. Digite algo que eu conheça!';
                 }
+
+                setTimeout(() => {
+                    messages.innerHTML += `<div class="message bot-message">Chatbot: ${botResponse}</div>`;
+                    messages.scrollTop = messages.scrollHeight;
+                }, 500);
             }
         }
     });
