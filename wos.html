@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Operacional Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="desktop">
+        <!-- Hotbar no lado esquerdo -->
+        <div class="hotbar">
+            <button class="hotbar-btn" onclick="openApp('files')">Arquivos</button>
+            <button class="hotbar-btn" onclick="openApp('calculator')">Calculadora</button>
+            <button class="hotbar-btn" onclick="openApp('terminal')">Terminal</button>
+            <button class="hotbar-btn" onclick="openApp('control-panel')">Painel de Controle</button>
+            <button class="hotbar-btn" onclick="openApp('browser')">Navegador</button>
+            <button class="hotbar-btn" onclick="openApp('notepad')">Bloco de Notas</button>
+            <button class="hotbar-btn" onclick="openApp('drawing')">Desenhar</button>
+            <button class="hotbar-btn" onclick="openApp('contacts')">Contatos</button>
+        </div>
+
+        <!-- Área de informações no canto superior direito -->
+        <div class="info-bar">
+            <div id="clock"></div>
+            <div id="date"></div>
+        </div>
+
+        <!-- Área de janelas -->
+        <div class="windows-area"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
